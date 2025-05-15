@@ -5,7 +5,9 @@ const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<CheckIn[] | CheckIn | { error: string }>
+  res: NextApiResponse<
+    CheckIn[] | CheckIn | { error: string } | { message: string }
+  >
 ) {
   if (req.method === "GET") {
     try {
@@ -30,19 +32,20 @@ export default async function handler(
     } catch {
       res.status(500).json({ error: "Failed to create check-in" });
     }
-  } else if (req.method === "POST") {
+  } else if (req.method === "DELETE") {
     try {
       const { id } = req.body;
 
       if (!id) {
-        return res.status(400).json({ error: "ID is required" });
+        await prisma.checkIn.deleteMany();
+        res.status(200).json({ message: "All check-ins deleted" });
       }
 
-      const post = await prisma.checkIn.delete({
+      const checkIn = await prisma.checkIn.delete({
         where: { id },
       });
 
-      res.status(200).json(post);
+      res.status(200).json(checkIn);
     } catch {
       res.status(500).json({ error: "Failed to delete check-in" });
     }

@@ -100,22 +100,53 @@ export default function Home() {
             }}
           />
         </div>
-        <button
-          type="submit"
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: "#007BFF",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            fontSize: "16px",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          Submit
-        </button>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button
+            type="submit"
+            style={{
+              width: "100%",
+              padding: "10px",
+              backgroundColor: "#007BFF",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+              fontSize: "16px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            Submit
+          </button>
+          <button
+            type="button"
+            style={{
+              width: "100%",
+              padding: "10px",
+              backgroundColor: "red",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+              fontSize: "16px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              fetch("/api/service", {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id: undefined }),
+              })
+                .then((res) => res.json())
+                .then(() => {
+                  setData([]);
+                });
+            }}
+          >
+            Delete All
+          </button>
+        </div>
       </form>
       {data && data.length > 0 ? (
         <table
@@ -144,6 +175,7 @@ export default function Home() {
               <th style={{ padding: "10px", border: "1px solid #ccc" }}>
                 Created At
               </th>
+              <th style={{ padding: "10px", border: "1px solid #ccc" }}></th>
             </tr>
           </thead>
           <tbody>
@@ -166,6 +198,35 @@ export default function Home() {
                 </td>
                 <td style={{ padding: "10px", border: "1px solid #ccc" }}>
                   {new Date(checkIn.createdAt).toLocaleString()}
+                </td>
+                <td>
+                  <button
+                    onClick={() => {
+                      fetch("/api/service", {
+                        method: "DELETE",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ id: checkIn.id }),
+                      })
+                        .then((res) => res.json())
+                        .then(() => {
+                          setData((prev) =>
+                            prev ? prev.filter((c) => c.id !== checkIn.id) : []
+                          );
+                        });
+                    }}
+                    style={{
+                      backgroundColor: "#FF0000",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "5px 10px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 type CheckIn = {
@@ -17,137 +18,75 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.target as HTMLFormElement);
-          const name = formData.get("name") as string;
-          const mood = Number(formData.get("mood"));
-          fetch("/api/service", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ name, mood }),
-          })
-            .then((res) => res.json())
-            .then((newCheckIn) => {
-              setData((prev) => (prev ? [...prev, newCheckIn] : [newCheckIn]));
-            });
-        }}
+    <div style={{ padding: "20px", maxWidth: "100%", margin: "0 auto" }}>
+      <div
         style={{
-          maxWidth: "400px",
-          margin: "20px auto",
-          padding: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          backgroundColor: "#f9f9f9",
+          gap: "10px",
+          display: "flex",
+          justifyContent: "start",
+          maxWidth: "500px",
         }}
       >
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            htmlFor="name"
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-              color: "#333",
-            }}
-          >
-            Name:
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            required
-            style={{
-              width: "95%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              fontSize: "16px",
-            }}
-          />
-        </div>
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            htmlFor="mood"
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-              color: "#333",
-            }}
-          >
-            Mood (1-10):
-          </label>
-          <input
-            type="number"
-            id="mood"
-            name="mood"
-            min="1"
-            max="10"
-            required
-            style={{
-              width: "95%",
-              padding: "10px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              fontSize: "16px",
-            }}
-          />
-        </div>
-        <div style={{ display: "flex", gap: "10px" }}>
-          <button
-            type="submit"
-            style={{
-              width: "100%",
-              padding: "10px",
-              backgroundColor: "#007BFF",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              fontSize: "16px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            Submit
-          </button>
-          <button
-            type="button"
-            style={{
-              width: "100%",
-              padding: "10px",
-              backgroundColor: "red",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              fontSize: "16px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              fetch("/api/service", {
-                method: "DELETE",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ id: undefined }),
-              })
-                .then((res) => res.json())
-                .then(() => {
-                  setData([]);
-                });
-            }}
-          >
-            Delete All
-          </button>
-        </div>
-      </form>
+        <Link
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#007BFF",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            textDecoration: "none",
+          }}
+          href={"/form"}
+        >
+          Fill out Form
+        </Link>
+        <Link
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "#007BFF",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            textDecoration: "none",
+          }}
+          href={"/dashboard"}
+        >
+          View Dashboard
+        </Link>
+        <button
+          type="button"
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "red",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            fetch("/api/service", {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ id: undefined }),
+            }).then((res) => res.json());
+          }}
+        >
+          Delete All
+        </button>
+      </div>
       {data && data.length > 0 ? (
         <table
           style={{
